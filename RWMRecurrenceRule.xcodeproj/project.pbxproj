@@ -398,10 +398,11 @@
 				TargetAttributes = {
 					1DEBEC6020BB389500B45BDA = {
 						CreatedOnToolsVersion = 9.3.1;
-						LastSwiftMigration = 0930;
+						LastSwiftMigration = "";
 					};
 					1DEBEC6920BB389500B45BDA = {
 						CreatedOnToolsVersion = 9.3.1;
+						LastSwiftMigration = "";
 					};
 					1DEBEC7D20BB38C500B45BDA = {
 						CreatedOnToolsVersion = 9.3.1;
@@ -576,6 +577,7 @@
 		1DEBEC5A20BB385600B45BDA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				IPHONEOS_DEPLOYMENT_TARGET = 13.3;
 				PRODUCT_NAME = "${PROJECT_NAME}";
 			};
 			name = Debug;
@@ -583,6 +585,7 @@
 		1DEBEC5B20BB385600B45BDA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				IPHONEOS_DEPLOYMENT_TARGET = 13.3;
 				PRODUCT_NAME = "${PROJECT_NAME}";
 			};
 			name = Release;
@@ -647,7 +650,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = RWMRecurrenceRule_iOS/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -721,7 +724,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = RWMRecurrenceRule_iOS/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

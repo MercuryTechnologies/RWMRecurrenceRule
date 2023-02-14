@@ -17,8 +17,7 @@ public class RWMRuleParser {
         return df
     }()
 
-    public init() {
-    }
+    public init() {}
 
     /// Compares two RRULE strings to see if they have the same components. The components do not need to be in the
     /// same order. Any `UNTIL` clause is ignored since the date can be in a different format.
@@ -30,7 +29,7 @@ public class RWMRuleParser {
     public func compare(rule left: String, to right: String) -> Bool {
         var leftParts = split(rule: left).sorted()
         var rightParts = split(rule: right).sorted()
-        if leftParts.first(where: { $0.hasPrefix("UNTIL") }) != nil && rightParts.first(where: { $0.hasPrefix("UNTIL")}) != nil {
+        if leftParts.first(where: { $0.hasPrefix("UNTIL") }) != nil, rightParts.first(where: { $0.hasPrefix("UNTIL") }) != nil {
             leftParts = leftParts.filter { !$0.hasPrefix("UNTIL") }
             rightParts = leftParts.filter { !$0.hasPrefix("UNTIL") }
         }
@@ -70,16 +69,16 @@ public class RWMRuleParser {
     /// - Parameter rule: The RRULE string.
     /// - Returns: The resulting recurrence rule. If the RRULE string is invalid in any way, the result is `nil`.
     public func parse(rule: String) -> RWMRecurrenceRule? {
-        var frequency: RWMRecurrenceFrequency? = nil
-        var interval: Int? = nil
-        var firstDayOfTheWeek: RWMWeekday? = nil
-        var daysOfTheWeek: [RWMRecurrenceDayOfWeek]? = nil
-        var daysOfTheMonth: [Int]? = nil
-        var daysOfTheYear: [Int]? = nil
-        var weeksOfTheYear: [Int]? = nil
-        var monthsOfTheYear: [Int]? = nil
-        var setPositions: [Int]? = nil
-        var recurrenceEnd: RWMRecurrenceEnd? = nil
+        var frequency: RWMRecurrenceFrequency?
+        var interval: Int?
+        var firstDayOfTheWeek: RWMWeekday?
+        var daysOfTheWeek: [RWMRecurrenceDayOfWeek]?
+        var daysOfTheMonth: [Int]?
+        var daysOfTheYear: [Int]?
+        var weeksOfTheYear: [Int]?
+        var monthsOfTheYear: [Int]?
+        var setPositions: [Int]?
+        var recurrenceEnd: RWMRecurrenceEnd?
 
         let parts = split(rule: rule)
         for part in parts {
@@ -131,20 +130,20 @@ public class RWMRuleParser {
                 guard setPositions == nil else { return nil } // only allowed one BYSETPOS
                 setPositions = parse(bySetPosition: varval[1])
                 guard setPositions != nil else { return nil } // invalid BYSETPOS
-                /* Not supported by EKRecurrenceRule
-            case "BYHOUR":
-                return nil
-            case "BYMINUTE":
-                return nil
-            case "BYSECOND":
-                return nil
-                 */
+            /* Not supported by EKRecurrenceRule
+             case "BYHOUR":
+                 return nil
+             case "BYMINUTE":
+                 return nil
+             case "BYSECOND":
+                 return nil
+                  */
             default:
                 return nil
             }
         }
 
-        if let frequency = frequency {
+        if let frequency {
             return RWMRecurrenceRule(recurrenceWith: frequency, interval: interval, daysOfTheWeek: daysOfTheWeek, daysOfTheMonth: daysOfTheMonth, monthsOfTheYear: monthsOfTheYear, weeksOfTheYear: weeksOfTheYear, daysOfTheYear: daysOfTheYear, setPositions: setPositions, end: recurrenceEnd, firstDay: firstDayOfTheWeek)
         } else {
             return nil // no FREQ
@@ -239,7 +238,7 @@ public class RWMRuleParser {
     private func parse(until: String) -> RWMRecurrenceEnd? {
         let df = DateFormatter()
         df.locale = Locale(identifier: "en_US_POSIX")
-        for format in [ "yyyyMMdd'T'HHmmssX", "yyyyMMdd'T'HHmmss", "'TZID'=VV:yyyyMMdd'T'HHmmss", "yyyyMMdd" ] {
+        for format in ["yyyyMMdd'T'HHmmssX", "yyyyMMdd'T'HHmmss", "'TZID'=VV:yyyyMMdd'T'HHmmss", "yyyyMMdd"] {
             df.dateFormat = format
             if let date = df.date(from: until) {
                 return RWMRecurrenceEnd(end: date)
@@ -272,11 +271,11 @@ public class RWMRuleParser {
     }
 
     private func string(from: [Int]) -> String {
-        return from.map { String($0) }.joined(separator: ",")
+        from.map { String($0) }.joined(separator: ",")
     }
 
     private func parse(byMonth: String) -> [Int]? {
-        return parseNumberList(byMonth)
+        parseNumberList(byMonth)
     }
 
     private func parse(byWeekStart: String) -> RWMWeekday? {
@@ -326,14 +325,13 @@ public class RWMRuleParser {
             let scanner = Scanner(string: part)
             var count = 0
             scanner.scanInt(&count)
-            var weekday: NSString?
-            if scanner.scanCharacters(from: .alphanumerics, into: &weekday) && scanner.isAtEnd {
-                if let weekday = weekday, let dow = parse(byWeekStart: weekday as String) {
-                    let rec = count == 0 ? RWMRecurrenceDayOfWeek(dow) : RWMRecurrenceDayOfWeek(dow, weekNumber: count)
-                    res.append(rec)
-                } else {
-                    return nil
-                }
+
+            if let weekday = scanner.scanCharacters(from: .alphanumerics),
+               scanner.isAtEnd,
+               let dow = parse(byWeekStart: weekday as String)
+            {
+                let rec = count == 0 ? RWMRecurrenceDayOfWeek(dow) : RWMRecurrenceDayOfWeek(dow, weekNumber: count)
+                res.append(rec)
             } else {
                 return nil
             }
@@ -343,7 +341,7 @@ public class RWMRuleParser {
     }
 
     private func string(from: [RWMRecurrenceDayOfWeek]) -> String {
-        return from.map {
+        from.map {
             var res = ""
             if $0.weekNumber != 0 {
                 res += String($0.weekNumber)
@@ -354,18 +352,18 @@ public class RWMRuleParser {
     }
 
     private func parse(byMonthDay: String) -> [Int]? {
-        return parseNumberList(byMonthDay)
+        parseNumberList(byMonthDay)
     }
 
     private func parse(byYearDay: String) -> [Int]? {
-        return parseNumberList(byYearDay)
+        parseNumberList(byYearDay)
     }
 
     private func parse(byWeekNo: String) -> [Int]? {
-        return parseNumberList(byWeekNo)
+        parseNumberList(byWeekNo)
     }
 
     private func parse(bySetPosition: String) -> [Int]? {
-        return parseNumberList(bySetPosition)
+        parseNumberList(bySetPosition)
     }
 }

@@ -34,23 +34,23 @@ public struct RWMRecurrenceEnd: Equatable {
     ///
     /// - Parameter end: The end date.
     public init(end: Date) {
-        self.endDate = end
-        self.count = 0
+        endDate = end
+        count = 0
     }
 
     /// Initializes and returns a count-based recurrence end with a given maximum occurrence count.
     ///
     /// - Parameter occurrenceCount: The maximum occurrence count.
     public init(occurrenceCount: Int) {
-        self.endDate = nil
+        endDate = nil
         if occurrenceCount > 0 {
-            self.count = occurrenceCount
+            count = occurrenceCount
         } else {
             fatalError("occurrenceCount must be > 0")
         }
     }
 
-    public static func==(lhs: RWMRecurrenceEnd, rhs: RWMRecurrenceEnd) -> Bool {
+    public static func== (lhs: RWMRecurrenceEnd, rhs: RWMRecurrenceEnd) -> Bool {
         if let ldate = lhs.endDate {
             if let rdate = rhs.endDate {
                 return ldate == rdate // both are dates
@@ -120,8 +120,8 @@ public struct RWMRecurrenceDayOfWeek: Equatable {
         self.init(dayOfTheWeek: dayOfTheWeek, weekNumber: weekNumber)
     }
 
-    public static func==(lhs: RWMRecurrenceDayOfWeek, rhs: RWMRecurrenceDayOfWeek) -> Bool {
-        return lhs.dayOfTheWeek == rhs.dayOfTheWeek && lhs.weekNumber == rhs.weekNumber
+    public static func== (lhs: RWMRecurrenceDayOfWeek, rhs: RWMRecurrenceDayOfWeek) -> Bool {
+        lhs.dayOfTheWeek == rhs.dayOfTheWeek && lhs.weekNumber == rhs.weekNumber
     }
 }
 
@@ -178,8 +178,8 @@ public struct RWMRecurrenceRule: Equatable {
     public init?(recurrenceWith type: RWMRecurrenceFrequency, interval: Int?, daysOfTheWeek days: [RWMRecurrenceDayOfWeek]?, daysOfTheMonth monthDays: [Int]?, monthsOfTheYear months: [Int]?, weeksOfTheYear: [Int]?, daysOfTheYear: [Int]?, setPositions: [Int]?, end: RWMRecurrenceEnd?, firstDay: RWMWeekday?) {
         // NOTE - See https://icalendar.org/iCalendar-RFC-5545/3-3-10-recurrence-rule.html
 
-        if let interval = interval, interval <= 0 { return nil } // If specified, INTERVAL must be 1 or more
-        if let days = days {
+        if let interval, interval <= 0 { return nil } // If specified, INTERVAL must be 1 or more
+        if let days {
             // In daily or weekly mode or in yearly mode with week numbers, the days should not have a week number.
             if (type != .monthly && type != .yearly) || (type == .yearly && weeksOfTheYear != nil) {
                 for day in days {
@@ -199,14 +199,14 @@ public struct RWMRecurrenceRule: Equatable {
                 if month < 1 || month > 12 { return nil }
             }
         }
-        if let weeksOfTheYear = weeksOfTheYear {
+        if let weeksOfTheYear {
             guard type == .yearly else { return nil }
 
             for week in weeksOfTheYear {
                 if week < -53 || week > 53 || week == 0 { return nil }
             }
         }
-        if let daysOfTheYear = daysOfTheYear {
+        if let daysOfTheYear {
             // Also supported by secondly, minutely, and hourly
             guard type == .yearly else { return nil }
 
@@ -214,27 +214,26 @@ public struct RWMRecurrenceRule: Equatable {
                 if day < -366 || day > 366 || day == 0 { return nil }
             }
         }
-        if let setPositions = setPositions {
+        if let setPositions {
             for pos in setPositions {
                 if pos < -366 || pos > 366 || pos == 0 { return nil }
             }
         }
 
-        self.frequency = type
+        frequency = type
         self.interval = interval
-        self.firstDayOfTheWeek = firstDay
-        self.daysOfTheWeek = days
-        self.daysOfTheMonth = monthDays
+        firstDayOfTheWeek = firstDay
+        daysOfTheWeek = days
+        daysOfTheMonth = monthDays
         self.daysOfTheYear = daysOfTheYear
         self.weeksOfTheYear = weeksOfTheYear
-        self.monthsOfTheYear = months
+        monthsOfTheYear = months
         self.setPositions = setPositions
-        self.recurrenceEnd = end
+        recurrenceEnd = end
     }
 
-    public static func==(lhs: RWMRecurrenceRule, rhs: RWMRecurrenceRule) -> Bool {
-        return
-            lhs.frequency == rhs.frequency &&
+    public static func== (lhs: RWMRecurrenceRule, rhs: RWMRecurrenceRule) -> Bool {
+        lhs.frequency == rhs.frequency &&
             lhs.interval == rhs.interval &&
             lhs.firstDayOfTheWeek == rhs.firstDayOfTheWeek &&
             lhs.daysOfTheWeek == rhs.daysOfTheWeek &&
